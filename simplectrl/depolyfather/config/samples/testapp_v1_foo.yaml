@@ -1,0 +1,14 @@
+apiVersion: testapp.my.domain/v1
+kind: Foo
+metadata:
+  labels:
+    app.kubernetes.io/name: foo
+    app.kubernetes.io/instance: foo-sample
+    app.kubernetes.io/part-of: kubebuilder
+    app.kuberentes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: kubebuilder
+  name: foo-sample
+spec:
+  # TODO(user): Add fields here
+  replicas: 3
+  deploymentName: "test"

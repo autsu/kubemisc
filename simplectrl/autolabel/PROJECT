@@ -1,0 +1,12 @@
+domain: io.io
+layout:
+- go.kubebuilder.io/v3
+projectName: autolabel
+repo: io.io/autolabel
+resources:
+- controller: true
+  domain: io.io
+  group: chore
+  kind: AutoLabel
+  version: v1
+version: "3"
