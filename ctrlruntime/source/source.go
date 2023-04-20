@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"k8s.io/apimachinery/pkg/types"
 	"os"
-	ctrl "sigs.k8s.io/controller-runtime"
 	"time"
 
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 )
@@ -50,10 +50,8 @@ func (f *FileWatch) Sync() {
 					return
 				}
 				if modify {
-					klog.Info("a modify event")
-					// Add 的对象必须是 ctrl.Request ?
+					// Add 的参数必须是 ctrl.Request 类型的，其他类型会直接被 controller 丢弃
 					f.q.Add(ctrl.Request{NamespacedName: types.NamespacedName{Name: f.p}})
-					//klog.Info("queue len: ", f.q.Len())
 					f.lastModTime = modTime
 				}
 			}
@@ -62,12 +60,10 @@ func (f *FileWatch) Sync() {
 }
 
 func (f *FileWatch) FileIsModify() (bool, time.Time, error) {
-	//klog.Info("in")
 	stat, err := os.Stat(f.p)
 	if err != nil {
 		return false, time.Time{}, err
 	}
-	//klog.Info("last mod time: ", f.lastModTime, "cur mod time: ", stat.ModTime())
 	if stat.ModTime().After(f.lastModTime) {
 		return true, stat.ModTime(), nil
 	}
@@ -75,9 +71,8 @@ func (f *FileWatch) FileIsModify() (bool, time.Time, error) {
 }
 
 func (f *FileWatch) Start(ctx context.Context, h handler.EventHandler, queue workqueue.RateLimitingInterface, p ...predicate.Predicate) error {
-	klog.Info("fileWatch start!!!")
-	klog.Info("queue info", queue.Len())
+	klog.Info("fileWatch start...")
 	f.q = queue
-	f.Sync()
+	go f.Sync()
 	return nil
 }

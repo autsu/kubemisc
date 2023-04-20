@@ -10,6 +10,11 @@ import (
 )
 
 func main() {
+	filepath := os.Getenv("FILE_PATH")
+	if filepath == "" {
+		panic("file path can't be nil")
+	}
+
 	cfg, err := config.GetConfig()
 	if err != nil {
 		klog.Error(err, "unable to get kubeconfig")
@@ -21,7 +26,9 @@ func main() {
 		klog.Error(err, "unable to set up manager")
 		os.Exit(1)
 	}
-	if err := (&Ctrl{}).SetupWithManager(mgr); err != nil {
+	if err := (&Ctrl{
+		fw: NewFileWatch(filepath),
+	}).SetupWithManager(mgr); err != nil {
 		klog.Error(err)
 		os.Exit(1)
 	}

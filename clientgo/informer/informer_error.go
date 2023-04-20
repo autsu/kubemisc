@@ -14,6 +14,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+// 错误示例
 func __main() {
 	cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	if err != nil {
