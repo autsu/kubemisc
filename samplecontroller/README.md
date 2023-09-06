@@ -7,9 +7,9 @@ defined with a CustomResourceDefinition (CRD).
 
 This particular example demonstrates how to perform basic operations such as:
 
-* How to register a new custom resource (custom resource type) of type `Foo` using a CustomResourceDefinition.
-* How to create/get/list instances of your new resource type `Foo`.
-* How to setup a controller on resource handling create/update/delete events.
+* How to register a new custom apiResourceList (custom apiResourceList type) of type `Foo` using a CustomResourceDefinition.
+* How to create/get/list instances of your new apiResourceList type `Foo`.
+* How to setup a controller on apiResourceList handling create/update/delete events.
 
 It makes use of the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator)
 to generate a typed client, informers, listers and deep-copy functions. You can
@@ -89,16 +89,16 @@ go build -o samplecontroller .
 # create a CustomResourceDefinition
 kubectl create -f artifacts/examples/crd-status-subresource.yaml
 
-# create a custom resource of type Foo
+# create a custom apiResourceList of type Foo
 kubectl create -f artifacts/examples/example-foo.yaml
 
-# check deployments created through the custom resource
+# check deployments created through the custom apiResourceList
 kubectl get deployments
 ```
 
 ## Use Cases
 
-CustomResourceDefinitions can be used to implement custom resource types for your Kubernetes cluster.
+CustomResourceDefinitions can be used to implement custom apiResourceList types for your Kubernetes cluster.
 These act like most other Resources in Kubernetes, and may be `kubectl apply`'d, etc.
 
 Some example use cases:
@@ -108,10 +108,10 @@ Some example use cases:
 
 ## Defining types
 
-Each instance of your custom resource has an attached Spec, which should be defined via a `struct{}` to provide data format validation.
+Each instance of your custom apiResourceList has an attached Spec, which should be defined via a `struct{}` to provide data format validation.
 In practice, this Spec is arbitrary key-value data that specifies the configuration/behavior of your Resource.
 
-For example, if you were implementing a custom resource for a Database, you might provide a DatabaseSpec like the following:
+For example, if you were implementing a custom apiResourceList for a Database, you might provide a DatabaseSpec like the following:
 
 ``` go
 type DatabaseSpec struct {
@@ -128,23 +128,23 @@ type User struct {
 
 ## Validation
 
-To validate custom resources, use the [`CustomResourceValidation`](https://kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-resource-definitions/#validation) feature. Validation in the form of a [structured schema](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/#specifying-a-structural-schema) is mandatory to be provided for `apiextensions.k8s.io/metav1`.
+To validate custom resources, use the [`CustomResourceValidation`](https://kubernetes.io/docs/tasks/access-kubernetes-api/extend-api-custom-apiResourceList-definitions/#validation) feature. Validation in the form of a [structured schema](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-apiResourceList-definitions/#specifying-a-structural-schema) is mandatory to be provided for `apiextensions.k8s.io/metav1`.
 
 ### Example
 
-The schema in [`crd.yaml`](./artifacts/examples/crd.yaml) applies the following validation on the custom resource:
+The schema in [`crd.yaml`](./artifacts/examples/crd.yaml) applies the following validation on the custom apiResourceList:
 `spec.replicas` must be an integer and must have a minimum value of 1 and a maximum value of 10.
 
 ## Subresources
 
-Custom Resources support `/status` and `/scale` [subresources](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#subresources). The `CustomResourceSubresources` feature is in GA from metav1.16.
+Custom Resources support `/status` and `/scale` [subresources](https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-apiResourceList-definitions/#subresources). The `CustomResourceSubresources` feature is in GA from metav1.16.
 
 ### Example
 
 The CRD in [`crd-status-subresource.yaml`](./artifacts/examples/crd-status-subresource.yaml) enables the `/status` subresource for custom resources.
-This means that [`UpdateStatus`](./controller.go) can be used by the controller to update only the status part of the custom resource.
+This means that [`UpdateStatus`](./controller.go) can be used by the controller to update only the status part of the custom apiResourceList.
 
-To understand why only the status part of the custom resource should be updated, please refer to the [Kubernetes API conventions](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status).
+To understand why only the status part of the custom apiResourceList should be updated, please refer to the [Kubernetes API conventions](https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status).
 
 In the above steps, use `crd-status-subresource.yaml` to create the CRD:
 
@@ -154,7 +154,7 @@ kubectl create -f artifacts/examples/crd-status-subresource.yaml
 ```
 
 ## A Note on the API version
-The [group](https://kubernetes.io/docs/reference/using-api/#api-groups) version of the custom resource in `crd.yaml` is `v1alpha`, this can be evolved to a stable API version, `metav1`, using [CRD Versioning](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definition-versioning/).
+The [group](https://kubernetes.io/docs/reference/using-api/#api-groups) version of the custom apiResourceList in `crd.yaml` is `v1alpha`, this can be evolved to a stable API version, `metav1`, using [CRD Versioning](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-apiResourceList-definition-versioning/).
 
 ## Cleanup
 

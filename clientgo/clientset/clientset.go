@@ -5,63 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	clientgo "zh.cargo.io/goclient"
+	"zh.cargo.io/goclient/helper"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/clientcmd"
 )
-
-func createPod(ctx context.Context, cli *kubernetes.Clientset, po *corev1.Pod) {
-	pod, err := cli.CoreV1().Pods(metav1.NamespaceDefault).Create(ctx, po, metav1.CreateOptions{})
-	if err != nil {
-		if errors.IsAlreadyExists(err) {
-			return
-		}
-		panic(err)
-	}
-	fmt.Printf("create pod %v\n", pod.Name)
-}
-
-func getPod(ctx context.Context, cli *kubernetes.Clientset, name string) *corev1.Pod {
-	pod, err := cli.CoreV1().Pods(metav1.NamespaceDefault).Get(ctx, name, metav1.GetOptions{})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("get pod: %v %v\n", pod.Name, pod.Spec.Containers[0].Image)
-	return pod
-}
-
-func updatePod(ctx context.Context, cli *kubernetes.Clientset, newPod *corev1.Pod) {
-	_, err := cli.CoreV1().Pods(metav1.NamespaceDefault).Update(ctx, newPod, metav1.UpdateOptions{})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("update pod")
-}
-
-func listPods(ctx context.Context, cli *kubernetes.Clientset) {
-	podList, err := cli.CoreV1().Pods(metav1.NamespaceDefault).List(ctx, metav1.ListOptions{LabelSelector: "app=example"})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Print("list pod: ")
-	for _, item := range podList.Items {
-		fmt.Println(item.Name, item.Spec.Containers[0].Image)
-	}
-}
-
-func deletePod(ctx context.Context, cli *kubernetes.Clientset, name string) {
-	err := cli.CoreV1().Pods(metav1.NamespaceDefault).Delete(ctx, name, metav1.DeleteOptions{})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("delete pod")
-}
 
 func main() {
 	cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
@@ -79,25 +31,40 @@ func main() {
 	}
 
 	ctx := context.Background()
-	pod := clientgo.NewPod()
-	createPod(ctx, clientset, pod)
+	pod := helper.NewPodSimple()
+	ph := helper.NewPodHelperForClientSet(clientset, metav1.NamespaceDefault)
+	pw := helper.NewPodWait(clientset, metav1.NamespaceDefault)
 
-	if err := wait.PollImmediate(time.Second, time.Second*30, clientgo.WaitPodCreate(ctx, clientset, pod.Name)); err != nil {
+	ph.Create(ctx, pod, metav1.CreateOptions{})
+	// 等待 pod 创建完成
+	if err := wait.PollImmediate(time.Second, time.Second*30, pw.WaitPodCreate(ctx, pod.Name)); err != nil {
 		panic(err)
 	}
 
-	podFromGet := getPod(ctx, clientset, pod.Name)
+	podFromGet := ph.Get(ctx, pod.Name, metav1.GetOptions{})
+
 	podFromGet.Spec.Containers[0].Image = "nginx:1.21.1"
-	updatePod(ctx, clientset, podFromGet)
-	if err := wait.PollImmediate(time.Second, time.Second*30, clientgo.WaitPodUpdate(ctx, clientset, pod.Name)); err != nil {
+	ph.Update(ctx, podFromGet, metav1.UpdateOptions{})
+	if err := wait.PollImmediate(time.Second, time.Second*30, pw.WaitPodUpdate(ctx, pod.Name)); err != nil {
 		panic(err)
 	}
 
-	listPods(ctx, clientset)
-	deletePod(ctx, clientset, pod.Name)
-	if err := wait.PollImmediate(time.Second, time.Second*30, clientgo.WaitPodDelete(ctx, clientset, pod.Name)); err != nil {
+	ph.List(ctx, metav1.ListOptions{LabelSelector: "app=example"}, func(items []corev1.Pod) {
+		fmt.Print("list pod: ")
+		for _, item := range items {
+			fmt.Println(item.Name, item.Spec.Containers[0].Image)
+		}
+	})
+
+	ph.Delete(ctx, pod.Name, metav1.DeleteOptions{})
+	if err := wait.PollImmediate(time.Second, time.Second*30, pw.WaitPodDelete(ctx, pod.Name)); err != nil {
 		panic(err)
 	}
 
-	listPods(ctx, clientset)
+	ph.List(ctx, metav1.ListOptions{LabelSelector: "app=example"}, func(items []corev1.Pod) {
+		fmt.Print("after delete, the pod list: ")
+		for _, item := range items {
+			fmt.Println(item.Name, item.Spec.Containers[0].Image)
+		}
+	})
 }

@@ -15,11 +15,11 @@ controller code that you will write.
 ## client-go components
 
 * Reflector: A reflector, which is defined in [type *Reflector* inside package *cache*](https://github.com/kubernetes/client-go/blob/master/tools/cache/reflector.go),
-watches the Kubernetes API for the specified resource type (kind).
+watches the Kubernetes API for the specified apiResourceList type (kind).
 The function in which this is done is *ListAndWatch*.
-The watch could be for an in-built resource or it could be for a custom resource.
+The watch could be for an in-built apiResourceList or it could be for a custom apiResourceList.
 When the reflector receives notification about existence of new
-resource instance through the watch API, it gets the newly created object
+apiResourceList instance through the watch API, it gets the newly created object
 using the corresponding listing API and puts it in the Delta Fifo queue
 inside the *watchHandler* function.
 
@@ -39,11 +39,11 @@ that generates an object’s key as `<namespace>/<name>` combination for that ob
 ## Custom Controller components
 
 * Informer reference: This is the reference to the Informer instance that knows
-how to work with your custom resource objects. Your custom controller code needs
+how to work with your custom apiResourceList objects. Your custom controller code needs
 to create the appropriate Informer.
 
 * Indexer reference: This is the reference to the Indexer instance that knows
-how to work with your custom resource objects. Your custom controller code needs
+how to work with your custom apiResourceList objects. Your custom controller code needs
 to create this. You will be using this reference for retrieving objects for
 later processing.
 

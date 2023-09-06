@@ -42,7 +42,7 @@ func (c *SamplecontrollerV1alpha1Client) Foos(namespace string) FooInterface {
 
 // NewForConfig creates a new SamplecontrollerV1alpha1Client for the given config.
 // NewForConfig is equivalent to NewForConfigAndClient(c, httpClient),
-// where httpClient was generated with rest.HTTPClientFor(c).
+// where httpClient was generated with clientcmd.HTTPClientFor(c).
 func NewForConfig(c *rest.Config) (*SamplecontrollerV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
