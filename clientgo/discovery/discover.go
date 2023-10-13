@@ -9,6 +9,7 @@ import (
 )
 
 // discoveryClient 可以查询集群里的 gvr 之类的信息
+// 没太搞明白这玩意的使用场景，除了 kubectl api-resources
 // 老实说一直没搞懂 resource 和 kind 的区别，为毛需要这两种定义，gvr 和 gvk 有啥区别？什么时候用 gvr，什么时候用 gvk？
 
 func main() {

@@ -96,7 +96,7 @@ func (p *PodHelperForClientSet) Delete(ctx context.Context, name string, opts me
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("delete pod")
+	fmt.Println("delete pod success")
 }
 
 // PodHelperForRESTClient wrap pod crud for RESTClient

@@ -1,0 +1,551 @@
+{
+    "kind": "PodList",
+    "apiVersion": "v1",
+    "metadata": {
+      "resourceVersion": "118712",
+      "continue": "eyJ2IjoibWV0YS5rOHMuaW8vdjEiLCJydiI6MTE4NzEyLCJzdGFydCI6ImJ1c3lib3gtN3I5OXpcdTAwMDAifQ",
+      "remainingItemCount": 20
+    },
+    "items": [
+      {
+        "metadata": {
+          "name": "busybox-6l6wx",
+          "namespace": "default",
+          "uid": "e18362e8-3b19-4a0e-bf6a-2a230fd66308",
+          "resourceVersion": "117597",
+          "creationTimestamp": "2023-07-01T17:15:22Z",
+          "labels": {
+            "test": "true"
+          },
+          "annotations": {
+            "cni.projectcalico.org/containerID": "200003eb495ff8cd026527b4e9fceb300e1f50a58a68e71ff44e7a7469873fd9",
+            "cni.projectcalico.org/podIP": "10.233.83.56/32",
+            "cni.projectcalico.org/podIPs": "10.233.83.56/32"
+          },
+          "managedFields": [
+            {
+              "manager": "reflect_list_limit",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-01T17:15:22Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:labels": {
+                    ".": {},
+                    "f:test": {}
+                  }
+                },
+                "f:spec": {
+                  "f:containers": {
+                    "k:{\"name\":\"busybox\"}": {
+                      ".": {},
+                      "f:command": {},
+                      "f:image": {},
+                      "f:imagePullPolicy": {},
+                      "f:name": {},
+                      "f:resources": {},
+                      "f:terminationMessagePath": {},
+                      "f:terminationMessagePolicy": {}
+                    }
+                  },
+                  "f:dnsPolicy": {},
+                  "f:enableServiceLinks": {},
+                  "f:restartPolicy": {},
+                  "f:schedulerName": {},
+                  "f:securityContext": {},
+                  "f:terminationGracePeriodSeconds": {}
+                }
+              }
+            },
+            {
+              "manager": "Go-http-client",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-01T17:15:26Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:cni.projectcalico.org/containerID": {},
+                    "f:cni.projectcalico.org/podIP": {},
+                    "f:cni.projectcalico.org/podIPs": {}
+                  }
+                }
+              },
+              "subresource": "status"
+            },
+            {
+              "manager": "kubelet",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-02T06:19:25Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:conditions": {
+                    "k:{\"type\":\"ContainersReady\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Initialized\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Ready\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    }
+                  },
+                  "f:containerStatuses": {},
+                  "f:hostIP": {},
+                  "f:phase": {},
+                  "f:podIP": {},
+                  "f:podIPs": {
+                    ".": {},
+                    "k:{\"ip\":\"10.233.83.56\"}": {
+                      ".": {},
+                      "f:ip": {}
+                    }
+                  },
+                  "f:startTime": {}
+                }
+              },
+              "subresource": "status"
+            }
+          ]
+        },
+        "spec": {
+          "volumes": [
+            {
+              "name": "kube-api-access-kngmk",
+              "projected": {
+                "sources": [
+                  {
+                    "serviceAccountToken": {
+                      "expirationSeconds": 3607,
+                      "path": "token"
+                    }
+                  },
+                  {
+                    "configMap": {
+                      "name": "kube-root-ca.crt",
+                      "items": [
+                        {
+                          "key": "ca.crt",
+                          "path": "ca.crt"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "downwardAPI": {
+                      "items": [
+                        {
+                          "path": "namespace",
+                          "fieldRef": {
+                            "apiVersion": "v1",
+                            "fieldPath": "metadata.namespace"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "defaultMode": 420
+              }
+            }
+          ],
+          "containers": [
+            {
+              "name": "busybox",
+              "image": "busybox",
+              "command": [
+                "sleep",
+                "3600"
+              ],
+              "resources": {},
+              "volumeMounts": [
+                {
+                  "name": "kube-api-access-kngmk",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "imagePullPolicy": "Always"
+            }
+          ],
+          "restartPolicy": "Always",
+          "terminationGracePeriodSeconds": 30,
+          "dnsPolicy": "ClusterFirst",
+          "serviceAccountName": "default",
+          "serviceAccount": "default",
+          "nodeName": "km1",
+          "securityContext": {},
+          "schedulerName": "default-scheduler",
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "operator": "Exists",
+              "effect": "NoExecute",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "operator": "Exists",
+              "effect": "NoExecute",
+              "tolerationSeconds": 300
+            }
+          ],
+          "priority": 0,
+          "enableServiceLinks": true,
+          "preemptionPolicy": "PreemptLowerPriority"
+        },
+        "status": {
+          "phase": "Running",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-01T17:15:22Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-02T06:19:25Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-02T06:19:25Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-01T17:15:22Z"
+            }
+          ],
+          "hostIP": "172.29.189.78",
+          "podIP": "10.233.83.56",
+          "podIPs": [
+            {
+              "ip": "10.233.83.56"
+            }
+          ],
+          "startTime": "2023-07-01T17:15:22Z",
+          "containerStatuses": [
+            {
+              "name": "busybox",
+              "state": {
+                "running": {
+                  "startedAt": "2023-07-02T06:19:24Z"
+                }
+              },
+              "lastState": {
+                "terminated": {
+                  "exitCode": 0,
+                  "reason": "Completed",
+                  "startedAt": "2023-07-02T05:19:02Z",
+                  "finishedAt": "2023-07-02T06:19:02Z",
+                  "containerID": "docker://04eba42ea9a745a53429f7085b4e0482c195265ee9fcd0ee766b25616efc4af4"
+                }
+              },
+              "ready": true,
+              "restartCount": 13,
+              "image": "busybox:latest",
+              "imageID": "docker-pullable://busybox@sha256:2376a0c12759aa1214ba83e771ff252c7b1663216b192fbe5e0fb364e952f85c",
+              "containerID": "docker://9b254c2b38d020ffe88223441204e027d0fab7a176032fa4f0e7a97f8baa7415",
+              "started": true
+            }
+          ],
+          "qosClass": "BestEffort"
+        }
+      },
+      {
+        "metadata": {
+          "name": "busybox-7r99z",
+          "namespace": "default",
+          "uid": "5a6b4efe-bb69-4595-8a30-ad778cc37e85",
+          "resourceVersion": "117424",
+          "creationTimestamp": "2023-07-01T17:15:21Z",
+          "labels": {
+            "test": "true"
+          },
+          "annotations": {
+            "cni.projectcalico.org/containerID": "3f6fd93c7407e5bbe7f64c9718679bc7cae663d4195d5ca01059c2f37122fda3",
+            "cni.projectcalico.org/podIP": "10.233.83.45/32",
+            "cni.projectcalico.org/podIPs": "10.233.83.45/32"
+          },
+          "managedFields": [
+            {
+              "manager": "reflect_list_limit",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-01T17:15:21Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:labels": {
+                    ".": {},
+                    "f:test": {}
+                  }
+                },
+                "f:spec": {
+                  "f:containers": {
+                    "k:{\"name\":\"busybox\"}": {
+                      ".": {},
+                      "f:command": {},
+                      "f:image": {},
+                      "f:imagePullPolicy": {},
+                      "f:name": {},
+                      "f:resources": {},
+                      "f:terminationMessagePath": {},
+                      "f:terminationMessagePolicy": {}
+                    }
+                  },
+                  "f:dnsPolicy": {},
+                  "f:enableServiceLinks": {},
+                  "f:restartPolicy": {},
+                  "f:schedulerName": {},
+                  "f:securityContext": {},
+                  "f:terminationGracePeriodSeconds": {}
+                }
+              }
+            },
+            {
+              "manager": "Go-http-client",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-01T17:15:23Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:cni.projectcalico.org/containerID": {},
+                    "f:cni.projectcalico.org/podIP": {},
+                    "f:cni.projectcalico.org/podIPs": {}
+                  }
+                }
+              },
+              "subresource": "status"
+            },
+            {
+              "manager": "kubelet",
+              "operation": "Update",
+              "apiVersion": "v1",
+              "time": "2023-07-02T06:18:04Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:conditions": {
+                    "k:{\"type\":\"ContainersReady\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Initialized\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    },
+                    "k:{\"type\":\"Ready\"}": {
+                      ".": {},
+                      "f:lastProbeTime": {},
+                      "f:lastTransitionTime": {},
+                      "f:status": {},
+                      "f:type": {}
+                    }
+                  },
+                  "f:containerStatuses": {},
+                  "f:hostIP": {},
+                  "f:phase": {},
+                  "f:podIP": {},
+                  "f:podIPs": {
+                    ".": {},
+                    "k:{\"ip\":\"10.233.83.45\"}": {
+                      ".": {},
+                      "f:ip": {}
+                    }
+                  },
+                  "f:startTime": {}
+                }
+              },
+              "subresource": "status"
+            }
+          ]
+        },
+        "spec": {
+          "volumes": [
+            {
+              "name": "kube-api-access-xsfqp",
+              "projected": {
+                "sources": [
+                  {
+                    "serviceAccountToken": {
+                      "expirationSeconds": 3607,
+                      "path": "token"
+                    }
+                  },
+                  {
+                    "configMap": {
+                      "name": "kube-root-ca.crt",
+                      "items": [
+                        {
+                          "key": "ca.crt",
+                          "path": "ca.crt"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "downwardAPI": {
+                      "items": [
+                        {
+                          "path": "namespace",
+                          "fieldRef": {
+                            "apiVersion": "v1",
+                            "fieldPath": "metadata.namespace"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "defaultMode": 420
+              }
+            }
+          ],
+          "containers": [
+            {
+              "name": "busybox",
+              "image": "busybox",
+              "command": [
+                "sleep",
+                "3600"
+              ],
+              "resources": {},
+              "volumeMounts": [
+                {
+                  "name": "kube-api-access-xsfqp",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File",
+              "imagePullPolicy": "Always"
+            }
+          ],
+          "restartPolicy": "Always",
+          "terminationGracePeriodSeconds": 30,
+          "dnsPolicy": "ClusterFirst",
+          "serviceAccountName": "default",
+          "serviceAccount": "default",
+          "nodeName": "km1",
+          "securityContext": {},
+          "schedulerName": "default-scheduler",
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "operator": "Exists",
+              "effect": "NoExecute",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "operator": "Exists",
+              "effect": "NoExecute",
+              "tolerationSeconds": 300
+            }
+          ],
+          "priority": 0,
+          "enableServiceLinks": true,
+          "preemptionPolicy": "PreemptLowerPriority"
+        },
+        "status": {
+          "phase": "Running",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-01T17:15:21Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-02T06:18:04Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-02T06:18:04Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2023-07-01T17:15:21Z"
+            }
+          ],
+          "hostIP": "172.29.189.78",
+          "podIP": "10.233.83.45",
+          "podIPs": [
+            {
+              "ip": "10.233.83.45"
+            }
+          ],
+          "startTime": "2023-07-01T17:15:21Z",
+          "containerStatuses": [
+            {
+              "name": "busybox",
+              "state": {
+                "running": {
+                  "startedAt": "2023-07-02T06:18:03Z"
+                }
+              },
+              "lastState": {
+                "terminated": {
+                  "exitCode": 0,
+                  "reason": "Completed",
+                  "startedAt": "2023-07-02T05:17:57Z",
+                  "finishedAt": "2023-07-02T06:17:57Z",
+                  "containerID": "docker://b9860fe52950d14c8d26e44d0014f71aa3e58e9b77086865c0660f9cfdc24434"
+                }
+              },
+              "ready": true,
+              "restartCount": 13,
+              "image": "busybox:latest",
+              "imageID": "docker-pullable://busybox@sha256:2376a0c12759aa1214ba83e771ff252c7b1663216b192fbe5e0fb364e952f85c",
+              "containerID": "docker://8a8b67014c219d197b6b1a75d35e76cb4cc64bd081004fd87401cedc74223e59",
+              "started": true
+            }
+          ],
+          "qosClass": "BestEffort"
+        }
+      }
+    ]
+  }

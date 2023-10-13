@@ -1,10 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
+	"void.io/kubemisc/clientgo/helper"
+
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -51,13 +58,26 @@ func main() {
 		panic(err)
 	}
 
-	stopCh := make(chan struct{})
-	defer close(stopCh)
+	stopCh := wait.NeverStop
 	factory.Start(stopCh)
 	// wait for the initial synchronization of the local cache.
 	if !cache.WaitForCacheSync(stopCh, podInformer.Informer().HasSynced) {
-		panic("failed to sync")
+		runtime.HandleError(errors.New("failed to sync"))
+		return
+		//panic("failed to sync")
 	}
 
-	select {}
+	// Lister 会直接从本地 cache 中获取，而不是请求 apiserver
+	podLister := podInformer.Lister()
+	pods, err := podLister.List(labels.Everything())
+	if err != nil {
+		panic(err)
+	}
+	helper.PrintNameForResourceList(pods)
+
+	pods, err = podLister.Pods(metav1.NamespaceDefault).List(labels.Everything())
+	if err != nil {
+		panic(err)
+	}
+	helper.PrintNameForResourceList(pods)
 }

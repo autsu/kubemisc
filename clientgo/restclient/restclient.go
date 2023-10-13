@@ -101,7 +101,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//clientcmd.BuildConfigFromKubeconfigGetter()
+	//config.BuildConfigFromKubeconfigGetter()
 
 	cfg.APIPath = "/api"
 	cfg.GroupVersion = &corev1.SchemeGroupVersion
