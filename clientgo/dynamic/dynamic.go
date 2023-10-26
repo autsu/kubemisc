@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"void.io/kubemisc/clientgo/helper"
+	"void.io/kubemisc/clientgo/helper/resource"
 
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
-var objs = []any{helper.NewPodSimple(), helper.NewDeploymentSimple()}
+var objs = []any{resource.NewPodSample(), resource.NewDeploymentSample()}
 
 func main() {
 	var (

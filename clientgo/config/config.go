@@ -12,6 +12,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
 // TODO: config.APIPath 的作用
@@ -80,4 +81,32 @@ func testConfig(ctx context.Context, config *rest.Config) *wrapErr {
 	}())
 
 	return nil
+}
+
+func NewRestConfig(server string, caData []byte, certData []byte, keyData []byte, timeout string) (*rest.Config, error) {
+	config := clientcmdapi.Config{
+		Preferences: *clientcmdapi.NewPreferences(),
+		Clusters: map[string]*clientcmdapi.Cluster{
+			"kubernetes": &clientcmdapi.Cluster{
+				Server:                   server,
+				CertificateAuthorityData: caData,
+			},
+		},
+		AuthInfos: map[string]*clientcmdapi.AuthInfo{
+			"kubernetes": &clientcmdapi.AuthInfo{
+				ClientCertificateData: certData,
+				ClientKeyData:         keyData,
+			},
+		},
+		Contexts: map[string]*clientcmdapi.Context{
+			"kubernetes": &clientcmdapi.Context{
+				Cluster:  "kubernetes",
+				AuthInfo: "kubernetes",
+			},
+		},
+		CurrentContext: "kubernetes",
+	}
+	return clientcmd.NewNonInteractiveClientConfig(config, config.CurrentContext, &clientcmd.ConfigOverrides{
+		Timeout: timeout,
+	}, nil).ClientConfig()
 }

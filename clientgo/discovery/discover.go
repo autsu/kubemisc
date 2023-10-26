@@ -30,10 +30,11 @@ func main() {
 
 	//fmt.Printf("APIGroup :\n\n %v\n\n\n\n", apiGroup)
 
+	fmt.Println("\n============ group list =============")
 	for _, group := range apiGroup {
 		fmt.Println(group.Name)
 	}
-	fmt.Printf("\n\n==================\n\n")
+	fmt.Printf("\n================================\n")
 
 	for _, apiResourceList := range apiResourceListSlice {
 		gv, err := schema.ParseGroupVersion(apiResourceList.GroupVersion)

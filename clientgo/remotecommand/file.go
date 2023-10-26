@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"k8s.io/klog/v2"
@@ -57,12 +56,12 @@ func (o *ExecOptions) ReadFile(filename string) ([]byte, error) {
 	if err := o.execute(); err != nil {
 		return nil, err
 	}
-	return ioutil.ReadAll(outStream)
+	return io.ReadAll(outStream)
 }
 
 func (o *ExecOptions) RemoveFile(src string) error {
 	o.Out = os.Stdout
-	o.command = []string{"rm", src}
+	o.command = []string{"rm", "-d", src}
 	if err := o.execute(); err != nil {
 		klog.Errorf("failed to execute command in container: %v", err)
 		return fmt.Errorf("execute command error, command=%v, error=%v", o.command, err)

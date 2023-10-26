@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"void.io/kubemisc/clientgo/helper"
+	"void.io/kubemisc/clientgo/helper/print"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -73,11 +73,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	helper.PrintNameForResourceList(pods)
+	print.ResourceListItemName(pods)
 
 	pods, err = podLister.Pods(metav1.NamespaceDefault).List(labels.Everything())
 	if err != nil {
 		panic(err)
 	}
-	helper.PrintNameForResourceList(pods)
+	print.ResourceListItemName(pods)
 }
