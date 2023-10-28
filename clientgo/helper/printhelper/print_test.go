@@ -1,4 +1,4 @@
-package print
+package printhelper
 
 import (
 	"testing"
@@ -22,4 +22,18 @@ func TestPrintNameForResourceList(t *testing.T) {
 
 	ResourceListItemName(podL)
 	ResourceListItemName(deployL)
+}
+
+func TestPrintObjJSON(t *testing.T) {
+	type Person struct {
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		Age       int    `json:"age"`
+	}
+	person := &Person{
+		FirstName: "John",
+		LastName:  "Doe",
+		Age:       30,
+	}
+	PrintObjJSON(person)
 }

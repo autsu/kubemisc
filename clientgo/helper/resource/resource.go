@@ -75,12 +75,15 @@ func NewDeploymentSample() *appsv1.Deployment {
 	return deployment
 }
 
-func NewDeploymentBy(name, namespace string, labels map[string]string) *appsv1.Deployment {
+func NewDeploymentBy(name, namespace string, selector map[string]string) *appsv1.Deployment {
+	if selector == nil || len(selector) == 0 {
+		panic("must set labels")
+	}
 	deploy := NewDeploymentSample()
 	deploy.Namespace = namespace
 	deploy.Name = name
-	deploy.Spec.Selector.MatchLabels = labels
-	deploy.Spec.Template.ObjectMeta.Labels = labels
+	deploy.Spec.Selector.MatchLabels = selector
+	deploy.Spec.Template.ObjectMeta.Labels = selector
 	return deploy
 }
 

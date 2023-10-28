@@ -1,33 +1,13 @@
 package patch
 
 import (
-	"encoding/json"
 	"testing"
 
 	"void.io/kubemisc/clientgo/helper/resource"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/util/strategicpatch"
 )
-
-func StrategicPatchDeploy(deploy *appsv1.Deployment, patchData []byte) *appsv1.Deployment {
-	deployJson, err := json.Marshal(deploy)
-	if err != nil {
-		panic(err)
-	}
-	patchDeploy := new(appsv1.Deployment)
-
-	patchDeployByte, err := strategicpatch.StrategicMergePatch(
-		deployJson, patchData, &appsv1.Deployment{})
-	if err != nil {
-		panic(err)
-	}
-	if err := json.Unmarshal(patchDeployByte, patchDeploy); err != nil {
-		panic(err)
-	}
-	return patchDeploy
-}
 
 func TestStrategicPatch(t *testing.T) {
 	tests := []struct {
@@ -39,6 +19,8 @@ func TestStrategicPatch(t *testing.T) {
 	}{
 		{
 			name: "patch labels",
+			// 疑问：Labels 字段的 Tag 里面没有指定 `patchStrategy`，但是经过我的测试，用 Strategic Patch 更新时，
+			// 对 Labels 实际执行的是 merge 操作，这是为什么？
 			deploy: func() *appsv1.Deployment {
 				deploy := resource.NewDeploymentSample()
 				deploy.Labels["patch"] = "false"
@@ -103,4 +85,8 @@ func TestStrategicPatch(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCreateTwoWayMergePatch(t *testing.T) {
+	CreateTwoWayMergePatch()
 }

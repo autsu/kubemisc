@@ -36,5 +36,7 @@ func main() {
 		VersionedParams(&opts, scheme.ParameterCodec).
 		URL()
 
+	// https://kubernetes.docker.internal:6443/apps/v1/collectionresources/workloads?labelSelector=test
+	// URL 格式如下：Group/Version/Resource/Name?opts
 	fmt.Println(url)
 }
