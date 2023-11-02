@@ -25,13 +25,17 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 )
 
 // AutoLabelReconciler reconciles a AutoLabel object
 type AutoLabelReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme   *runtime.Scheme
+	LabelKey string
+	LabelVal string
 }
 
 //+kubebuilder:rbac:groups=misc.io.io,resources=autolabels,verbs=get;list;watch;create;update;patch;delete
@@ -69,8 +73,15 @@ func (r *AutoLabelReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if deploy.Labels == nil {
 		deploy.Labels = make(map[string]string)
 	}
-	deploy.Labels["XXX"] = "DO_NOT_EDIT_IT"
+	if r.LabelKey != "" && r.LabelVal != "" {
+		deploy.Labels[r.LabelKey] = r.LabelVal
+	}
+	//if _, ok := deploy.Labels["XXX"]; ok {
+	//	delete(deploy.Labels, "XXX")
+	//}
 
+	// 疑问：我这里调用 Update 对资源进行更新，会再次触发调协吗？
+	// 会再次触发
 	if err := r.Client.Update(ctx, &deploy); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -79,12 +90,21 @@ func (r *AutoLabelReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *AutoLabelReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *AutoLabelReconciler) SetupWithManager(mgr ctrl.Manager, namespace string) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		// Uncomment the following line adding a pointer to an instance of the controlled resource as an argument
 		// For 只能调用一次，也就是说只能对一种资源进行 reconcile
 		//For(&corev1.Pod{}).
 		//For(&corev1.ReplicationController{}).
 		//For(&appsv1.ReplicaSet{}).
+		For(&appsv1.Deployment{}).
+		//WithEventFilter(predicate.LabelChangedPredicate{}).
+		// 只 watch 指定命名空间下的资源
+		WithEventFilter(predicate.Funcs{
+			CreateFunc:  func(event event.CreateEvent) bool { return event.Object.GetNamespace() == namespace },
+			DeleteFunc:  func(event event.DeleteEvent) bool { return event.Object.GetNamespace() == namespace },
+			UpdateFunc:  func(event event.UpdateEvent) bool { return event.ObjectNew.GetNamespace() == namespace },
+			GenericFunc: func(event event.GenericEvent) bool { return event.Object.GetNamespace() == namespace },
+		}).
 		Complete(r)
 }

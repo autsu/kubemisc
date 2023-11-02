@@ -57,7 +57,7 @@ func StrategicMergePatch2K8sUseJson() {
 }
 `)
 	patchDeploy, err := cli.AppsV1().Deployments(metav1.NamespaceDefault).Patch(
-		context.TODO(), "test-1027", types.StrategicMergePatchType, patchData, metav1.PatchOptions{})
+		context.TODO(), deploy.Name, types.StrategicMergePatchType, patchData, metav1.PatchOptions{})
 	if err != nil {
 		panic(err)
 	}

@@ -26,6 +26,11 @@ func TestContains(t *testing.T) {
 			m1:      map[string]string{"k": "v", "k1": "v1"},
 			m2:      map[string]string{"k": "v", "k1": "v1", "k2": "v2"},
 			wantRes: false,
+		}, {
+			name:    "test4",
+			m1:      map[string]string{"k": "v"},
+			m2:      map[string]string{},
+			wantRes: false,
 		},
 	}
 
