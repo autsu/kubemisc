@@ -18,6 +18,8 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
+
+	"void.io/kubemisc/clientgo/misc/find_service_deploy"
 )
 
 type ServiceController struct {
@@ -73,7 +75,7 @@ func (s *ServiceController) updateService(oldObj, newObj interface{}) {
 func (s *ServiceController) deleteService(obj interface{}) {
 	svc := obj.(*corev1.Service)
 	if svc.Spec.Type == corev1.ServiceTypeLoadBalancer {
-		deploys, err := findServiceDeploys(context.TODO(), s.cli, svc)
+		deploys, err := find_service_deploy.FindServiceDeploys(context.TODO(), s.cli, svc)
 		if err != nil {
 
 		}

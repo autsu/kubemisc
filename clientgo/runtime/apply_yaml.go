@@ -9,6 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
+// TODO：未完成
 func main() {
 	f, err := os.Open("../testdata/nginx-deploy.yaml")
 	if err != nil {

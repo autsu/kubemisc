@@ -11,6 +11,10 @@ import (
 
 func NewPodSample() *corev1.Pod {
 	pod := &corev1.Pod{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "v1",
+			Kind:       "Pod",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "example-pod",
 			Namespace: metav1.NamespaceDefault,
@@ -37,6 +41,10 @@ func NewPodSample() *corev1.Pod {
 
 func NewDeploymentSample() *appsv1.Deployment {
 	deployment := &appsv1.Deployment{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "apps/v1",
+			Kind:       "Deployment",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:   "demo-deployment",
 			Labels: make(map[string]string),

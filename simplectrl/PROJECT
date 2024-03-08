@@ -22,4 +22,13 @@ resources:
   kind: Foo
   path: void.io/kubemisc/api/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: void.io
+  group: void.io
+  kind: Bar
+  path: void.io/kubemisc/api/v1
+  version: v1
 version: "3"

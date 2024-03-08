@@ -1,10 +1,13 @@
-package main
+package service_bind_limit
 
 import (
 	"context"
 
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/client-go/kubernetes"
+
+	"void.io/kubemisc/clientgo/misc/find_deploy_service"
+	"void.io/kubemisc/clientgo/misc/find_service_deploy"
 )
 
 var limit int32 = 50
@@ -13,14 +16,14 @@ func CheckServiceLimit(ctx context.Context, cli *kubernetes.Clientset, deploy *a
 	if deploy == nil {
 		return true, nil
 	}
-	services, err := findDeployServices(ctx, cli, deploy)
+	services, err := find_deploy_service.FindDeployServices(ctx, cli, deploy)
 	if err != nil {
 		return false, err
 	}
 	if len(services) == 0 {
 		return true, nil
 	}
-	deploys, err := findServiceDeploys(ctx, cli, services[0])
+	deploys, err := find_service_deploy.FindServiceDeploys(ctx, cli, services[0])
 	if err != nil {
 		return false, err
 	}

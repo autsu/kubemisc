@@ -1,4 +1,4 @@
-package main
+package get_service_pod
 
 import (
 	"context"

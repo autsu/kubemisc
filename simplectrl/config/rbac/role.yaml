@@ -1,0 +1,137 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - misc.io.io
+  resources:
+  - autolabels
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - misc.io.io
+  resources:
+  - autolabels/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - misc.io.io
+  resources:
+  - autolabels/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - misc.lubenwei.io
+  resources:
+  - autoservices
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - misc.lubenwei.io
+  resources:
+  - autoservices/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - misc.lubenwei.io
+  resources:
+  - autoservices/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - bars
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - bars/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - bars/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - foos
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - foos/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - foos/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - tests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - tests/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - void.io.void.io
+  resources:
+  - tests/status
+  verbs:
+  - get
+  - patch
+  - update

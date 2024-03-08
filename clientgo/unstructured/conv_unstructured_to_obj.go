@@ -13,8 +13,7 @@ import (
 )
 
 // 将 unstructured.Unstructured 转换为具体的 k8s 对象
-
-func main() {
+func convUnstructuredToObj() {
 	// Create a new dynamic client.
 	restConfig, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	assertNoError(err)

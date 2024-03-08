@@ -3,16 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
-	"k8s.io/apimachinery/pkg/api/errors"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
 
-	"void.io/kubemisc/clientgo/helper"
-
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"void.io/kubemisc/clientgo/helper"
 )
 
 // 更新会导致对象的 ResourceVersion 发生变化吗

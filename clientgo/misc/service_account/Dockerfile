@@ -1,0 +1,25 @@
+FROM golang:alpine AS builder
+
+# 启用go module
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct
+
+# 移动到工作目录：/build
+WORKDIR /build
+
+# 将代码复制到容器中
+COPY . .
+
+# 将我们的代码编译成二进制可执行文件 app
+RUN go build -o app .
+
+###################
+# 接下来创建一个小镜像
+###################
+FROM alpine
+
+# 从builder镜像中把/dist/app 拷贝到当前目录
+COPY --from=builder /build/app /
+
+# 需要运行的命令
+ENTRYPOINT ["/app"]

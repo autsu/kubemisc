@@ -17,25 +17,25 @@ const (
 )
 
 var (
-	cli *kubernetes.Clientset
+	globalCliSet *kubernetes.Clientset
 )
 
-func initClientSet() {
+func initGlobalClientSet() {
 	cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	if err != nil {
 		panic(err)
 	}
-	cli, err = kubernetes.NewForConfig(cfg)
+	globalCliSet, err = kubernetes.NewForConfig(cfg)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func initInformer() listerscorev1.ServiceLister {
-	if cli == nil {
-		initClientSet()
+	if globalCliSet == nil {
+		initGlobalClientSet()
 	}
-	factory := informers.NewSharedInformerFactory(cli, time.Second*30)
+	factory := informers.NewSharedInformerFactory(globalCliSet, time.Second*30)
 	serviceInformer := factory.Core().V1().Services()
 	stopCh := wait.NeverStop
 	factory.Start(stopCh)

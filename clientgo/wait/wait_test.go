@@ -54,3 +54,9 @@ func TestPollUntilContextCancel(t *testing.T) {
 			return false, err
 		})
 }
+
+func TestJitterUntil(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
+	defer cancel()
+	wait.JitterUntil(func() { fmt.Println("1") }, time.Second, 0.5, true, ctx.Done())
+}

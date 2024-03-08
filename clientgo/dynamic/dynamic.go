@@ -1,43 +1,36 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 
-	"void.io/kubemisc/clientgo/helper/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/tools/clientcmd"
 
-	"k8s.io/apimachinery/pkg/api/meta"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
+	resourcehelper "void.io/kubemisc/clientgo/helper/resource"
 )
 
-var objs = []any{resource.NewPodSample(), resource.NewDeploymentSample()}
-
 func main() {
-	var (
-		err  error
-		exts []runtime.RawExtension
-	)
-
-	for _, obj := range objs {
-		ext := runtime.RawExtension{}
-		ext.Raw, err = json.Marshal(obj)
-		if err != nil {
-			panic(err)
-		}
-		exts = append(exts, ext)
+	config, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+	if err != nil {
+		panic(err)
 	}
 
-	codec := unstructured.UnstructuredJSONScheme
-	for _, ext := range exts {
-		obj, gvk, err := codec.Decode(ext.Raw, nil, nil)
+	dclient, err := dynamic.NewForConfig(config)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, gvr := range []schema.GroupVersionResource{resourcehelper.GVR.Pod(), resourcehelper.GVR.Deployment()} {
+		// 根据 GVR 来 list 对象
+		res, err := dclient.Resource(gvr).Namespace(metav1.NamespaceDefault).List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(gvk)
-		accessor := meta.NewAccessor()
-		name, _ := accessor.Name(obj)
-		namespace, _ := accessor.Namespace(obj)
-		fmt.Printf("%v\\%v\n", namespace, name)
+		for _, item := range res.Items {
+			fmt.Printf("kind: %v, namespace/name: %v/%v\n", item.GetKind(), item.GetNamespace(), item.GetName())
+		}
 	}
 }

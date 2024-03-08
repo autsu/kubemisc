@@ -1,4 +1,4 @@
-package main
+package find_deploy_service
 
 import (
 	"context"
@@ -6,13 +6,19 @@ import (
 	"os"
 	"sync"
 	"testing"
-
-	"void.io/kubemisc/clientgo/helper/resource"
+	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/client-go/informers"
+	"k8s.io/client-go/kubernetes"
+	listerscorev1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
+	"k8s.io/client-go/tools/clientcmd"
+
+	"void.io/kubemisc/clientgo/helper/resource"
 )
 
 var (
@@ -29,6 +35,23 @@ var (
 		svc.Namespace = testNamespace
 		return svc
 	}()
+	cli = func() *kubernetes.Clientset {
+		cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err != nil {
+			panic(err)
+		}
+		c, err := kubernetes.NewForConfig(cfg)
+		if err != nil {
+			panic(err)
+		}
+		return c
+	}()
+)
+
+const (
+	testNamespace   = "test-1018"
+	testDeployName  = "test-1018"
+	testServiceName = "test-1018"
 )
 
 func cleanup() {
@@ -59,11 +82,22 @@ func initTestResource() error {
 
 func Init() {
 	once.Do(func() {
-		initClientSet()
 		if err := initTestResource(); err != nil {
 			panic(err)
 		}
 	})
+}
+
+func initInformer() listerscorev1.ServiceLister {
+	factory := informers.NewSharedInformerFactory(cli, time.Second*30)
+	serviceInformer := factory.Core().V1().Services()
+	stopCh := wait.NeverStop
+	factory.Start(stopCh)
+	//if !cache.WaitForCacheSync(stopCh, serviceInformer.Informer().HasSynced) {
+	//	runtime.HandleError(errors.New("failed to sync"))
+	//	return nil
+	//}
+	return serviceInformer.Lister()
 }
 
 func TestFindDeployServiceByInformer(t *testing.T) {
@@ -71,7 +105,7 @@ func TestFindDeployServiceByInformer(t *testing.T) {
 	//t.Cleanup(cleanup)
 	serviceLister := initInformer()
 
-	service, err := __findDeployServiceByInformerWithCache__(context.TODO(), serviceLister, deploy)
+	service, err := __findDeployServiceByInformerWithCache__(cli, context.TODO(), serviceLister, deploy)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,7 +114,6 @@ func TestFindDeployServiceByInformer(t *testing.T) {
 }
 
 func TestFindDeployServiceByClientSet(t *testing.T) {
-	initClientSet()
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource:   false,
 		Level:       slog.LevelInfo,
@@ -113,7 +146,6 @@ func TestInitForFindDeployService(t *testing.T) {
 func TestFindDeployServiceErr2(t *testing.T) {
 	//Init()
 	//t.Cleanup(cleanup)
-	initClientSet()
 	services, err := __findDeployService2Err__(cli, testNamespace, deploy)
 	if err != nil {
 		t.Fatal(err)

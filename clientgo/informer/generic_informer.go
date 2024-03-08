@@ -45,7 +45,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	manager := NewInformerManager(cli, []schema.GroupVersionResource{resource.GvrPods, resource.GvrServices, resource.GvrDeployments})
+	manager := NewInformerManager(cli, []schema.GroupVersionResource{resource.GVR.Pod(), resource.GVR.Service(), resource.GVR.Deployment()})
 	manager.Run(wait.NeverStop)
 
 }

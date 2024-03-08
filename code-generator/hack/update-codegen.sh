@@ -36,4 +36,4 @@ CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-
 #   --go-header-file "${SCRIPT_ROOT}"/hack/custom-boilerplate.go.txt
 
 
-##${HOME}/pj/GoProjects/k8misc/code-generator/pkg/apis \
+##${HOME}/pj/GoProjects/kubemisc/code-generator/pkg/apis \

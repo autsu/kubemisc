@@ -6,14 +6,14 @@ import (
 	"log/slog"
 	"time"
 
-	"void.io/kubemisc/clientgo/helper/pods"
-	resourcehelper "void.io/kubemisc/clientgo/helper/resource"
-	waithelper "void.io/kubemisc/clientgo/helper/wait"
-
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+
+	"void.io/kubemisc/clientgo/helper/pods"
+	resourcehelper "void.io/kubemisc/clientgo/helper/resource"
+	waithelper "void.io/kubemisc/clientgo/helper/wait"
 )
 
 func main() {

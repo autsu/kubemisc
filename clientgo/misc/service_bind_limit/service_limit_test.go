@@ -1,13 +1,13 @@
-package main
+package service_bind_limit
 
 import (
 	"context"
 	"testing"
 
-	"void.io/kubemisc/clientgo/helper"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/pointer"
+
+	"void.io/kubemisc/clientgo/helper"
 )
 
 // deploy1 找到 -> service 找到 -> deploy1, deploy2, deploy3

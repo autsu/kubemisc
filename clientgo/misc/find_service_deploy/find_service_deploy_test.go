@@ -1,16 +1,16 @@
-package main
+package find_service_deploy
 
 import (
 	"context"
 	"testing"
 
-	"void.io/kubemisc/clientgo/helper"
-	"void.io/kubemisc/clientgo/helper/resource"
-
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	kubeerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"void.io/kubemisc/clientgo/helper"
+	"void.io/kubemisc/clientgo/helper/resource"
 )
 
 func initResourceForTestFindServiceDeploys() {
@@ -90,7 +90,7 @@ func TestFindServiceDeploys(t *testing.T) {
 		"app":     "nginx",
 		"version": "v1",
 	}
-	deploys, err := findServiceDeploys(context.TODO(), helper.NewClientSetOrDie(), svc)
+	deploys, err := FindServiceDeploys(context.TODO(), helper.NewClientSetOrDie(), svc)
 	if err != nil {
 		panic(err)
 	}

@@ -40,15 +40,3 @@ func getResourceGV(wantResource string) (group, version string, find bool) {
 	}
 	return "", "", false
 }
-
-func main() {
-	resources := []string{"pizzas", "pods", "deployments"}
-	for _, resource := range resources {
-		group, version, find := getResourceGV(resource)
-		if !find {
-			fmt.Printf("not found resource %v\n", resource)
-			continue
-		}
-		fmt.Printf("%v Group/Version is %v/%v\n", resource, group, version)
-	}
-}

@@ -13,7 +13,7 @@ func TestNewGenericRESTClientWithGroupVersion(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	cli, err := NewGenericRESTClientWithGroupVersion(cfg, resource.GvrPods.GroupVersion())
+	cli, err := NewGenericRESTClientWithGroupVersion(cfg, resource.GVR.Pod().GroupVersion())
 	if err != nil {
 		t.Fatal(err)
 	}

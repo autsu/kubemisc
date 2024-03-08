@@ -1,10 +1,8 @@
-package main
+package find_deploy_service
 
 import (
 	"context"
 	"log/slog"
-
-	"void.io/kubemisc/clientgo/helper/maps"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -15,9 +13,11 @@ import (
 	"k8s.io/client-go/kubernetes"
 	listerscorev1 "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
+
+	"void.io/kubemisc/clientgo/helper/maps"
 )
 
-func findDeployServices(ctx context.Context, cli *kubernetes.Clientset, deploy *appsv1.Deployment) ([]*corev1.Service, error) {
+func FindDeployServices(ctx context.Context, cli *kubernetes.Clientset, deploy *appsv1.Deployment) ([]*corev1.Service, error) {
 	if cli == nil || deploy == nil {
 		return nil, nil
 	}
@@ -107,7 +107,7 @@ func __findDeployServiceByClientSetWithCache__(ctx context.Context, cli *kuberne
 	return ret, nil
 }
 
-func __findDeployServiceByInformerWithCache__(ctx context.Context, lister listerscorev1.ServiceLister, deploy *appsv1.Deployment) ([]*corev1.Service, error) {
+func __findDeployServiceByInformerWithCache__(cli *kubernetes.Clientset, ctx context.Context, lister listerscorev1.ServiceLister, deploy *appsv1.Deployment) ([]*corev1.Service, error) {
 	if cli == nil || deploy == nil {
 		return nil, nil
 	}

@@ -18,7 +18,7 @@ func ObjJSON(obj any) {
 	if obj == nil {
 		return
 	}
-	j, err := json.MarshalIndent(obj, "", " ")
+	j, err := json.MarshalIndent(obj, "", "  ")
 	if err != nil {
 		panic(err)
 	}

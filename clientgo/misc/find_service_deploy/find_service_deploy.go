@@ -1,17 +1,17 @@
-package main
+package find_service_deploy
 
 import (
 	"context"
-
-	"void.io/kubemisc/clientgo/helper/maps"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+
+	"void.io/kubemisc/clientgo/helper/maps"
 )
 
-func findServiceDeploys(ctx context.Context, cli *kubernetes.Clientset, svc *corev1.Service) ([]*appsv1.Deployment, error) {
+func FindServiceDeploys(ctx context.Context, cli *kubernetes.Clientset, svc *corev1.Service) ([]*appsv1.Deployment, error) {
 	if cli == nil || svc == nil {
 		return nil, nil
 	}

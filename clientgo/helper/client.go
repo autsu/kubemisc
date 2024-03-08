@@ -19,5 +19,6 @@ func NewClientSetOrDie() *kubernetes.Clientset {
 	if err != nil {
 		panic(err)
 	}
+
 	return clientset
 }
