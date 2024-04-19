@@ -5,6 +5,8 @@ import (
 	"os"
 	"time"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
@@ -14,15 +16,27 @@ import (
 )
 
 type FileWatch struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
 	p           string
 	f           *os.File
 	q           workqueue.RateLimitingInterface
+	checkTime   time.Duration
 	lastModTime time.Time
 }
 
-func NewFileWatch(filepath string) *FileWatch {
+func (f *FileWatch) DeepCopyObject() runtime.Object {
+	deepCopy := NewFileWatch(f.p, f.checkTime)
+	deepCopy.lastModTime = f.lastModTime
+	deepCopy.q = f.q
+	return deepCopy
+}
+
+func NewFileWatch(filepath string, checkTime time.Duration) *FileWatch {
 	fw := new(FileWatch)
 	fw.p = filepath
+	fw.checkTime = checkTime
 
 	f, err := os.Open(filepath)
 	if err != nil {
@@ -40,13 +54,14 @@ func NewFileWatch(filepath string) *FileWatch {
 }
 
 func (f *FileWatch) Sync() {
-	ticket := time.NewTicker(time.Second * 3)
+	ticket := time.NewTicker(f.checkTime)
 	go func() {
 		for {
 			select {
 			case <-ticket.C:
 				modify, modTime, err := f.FileIsModify()
 				if err != nil {
+					klog.Error(err)
 					return
 				}
 				if modify {
@@ -60,6 +75,7 @@ func (f *FileWatch) Sync() {
 }
 
 func (f *FileWatch) FileIsModify() (bool, time.Time, error) {
+	//klog.Info("Checking file ", f.p)
 	stat, err := os.Stat(f.p)
 	if err != nil {
 		return false, time.Time{}, err
