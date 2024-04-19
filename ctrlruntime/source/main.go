@@ -1,7 +1,6 @@
 package main
 
 import (
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"os"
 	"time"
 
@@ -33,9 +32,6 @@ func main() {
 		klog.Error(err, "unable to set up manager")
 		os.Exit(1)
 	}
-
-	mgr.GetScheme().AddKnownTypes(
-		schema.GroupVersion{Group: "example.io", Version: "v1beta1"}, &FileWatch{})
 
 	ctr := &Ctrl{
 		fw: NewFileWatch(filepath, time.Second),
