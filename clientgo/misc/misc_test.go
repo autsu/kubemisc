@@ -3,16 +3,23 @@ package main
 import (
 	"context"
 	"fmt"
-	appsv1 "k8s.io/api/apps/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"testing"
-	"void.io/kubemisc/clientgo/helper/printhelper"
 
+	appsv1 "k8s.io/api/apps/v1"
 	metainternal "k8s.io/apimachinery/pkg/apis/meta/internalversion"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/selection"
+	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"void.io/kubemisc/clientgo/helper/printhelper"
 )
+
+func init() {
+	initGlobalClientSet()
+	initGlobalDynamicClient()
+}
 
 func TestName(t *testing.T) {
 	testLabels := map[string]string{"key": "value"}
@@ -95,4 +102,29 @@ func TestChangeRollingUpdate(t *testing.T) {
 	fmt.Println(dep.Spec.Strategy.RollingUpdate)
 	changeRollingUpdate(dep)
 	fmt.Println(dep.Spec.Strategy.RollingUpdate)
+}
+
+func TestEndpointSlice(t *testing.T) {
+	initGlobalClientSet()
+	globalCliSet.DiscoveryV1().EndpointSlices(metav1.NamespaceDefault)
+}
+
+func TestEndpointSlice1(t *testing.T) {
+	serviceName := "nginx-service"
+	resp, err := globalDynamicCli.Resource(schema.GroupVersionResource{
+		Group:    "discovery.k8s.io",
+		Version:  "v1",
+		Resource: "endpointslices",
+	}).List(context.TODO(), metav1.ListOptions{
+		LabelSelector: "kubernetes.io/service-name=" + serviceName,
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, item := range resp.Items {
+		//t.Logf("kubernetes.io/service-name: %+v\n", item.GetLabels()["kubernetes.io/service-name"])
+		t.Logf("name: %v\n", item.GetName())
+	}
 }

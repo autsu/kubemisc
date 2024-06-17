@@ -1,9 +1,11 @@
 package main
 
 import (
+	"sync"
 	"time"
 
 	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	listerscorev1 "k8s.io/client-go/listers/core/v1"
@@ -17,18 +19,36 @@ const (
 )
 
 var (
-	globalCliSet *kubernetes.Clientset
+	globalCliSet     *kubernetes.Clientset
+	globalDynamicCli *dynamic.DynamicClient
+
+	onceForCliSet  sync.Once
+	onceForDynamic sync.Once
 )
 
 func initGlobalClientSet() {
-	cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
-	if err != nil {
-		panic(err)
-	}
-	globalCliSet, err = kubernetes.NewForConfig(cfg)
-	if err != nil {
-		panic(err)
-	}
+	onceForCliSet.Do(func() {
+		cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err != nil {
+			panic(err)
+		}
+		globalCliSet, err = kubernetes.NewForConfig(cfg)
+		if err != nil {
+			panic(err)
+		}
+	})
+}
+
+func initGlobalDynamicClient() {
+	onceForDynamic.Do(func() {
+		cfg, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err != nil {
+			panic(err)
+		}
+
+		globalDynamicCli = dynamic.NewForConfigOrDie(cfg)
+
+	})
 }
 
 func initInformer() listerscorev1.ServiceLister {

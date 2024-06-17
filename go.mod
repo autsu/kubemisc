@@ -1,6 +1,6 @@
 module void.io/kubemisc
 
-go 1.21
+go 1.22
 
 require (
 	github.com/evanphx/json-patch/v5 v5.6.0
